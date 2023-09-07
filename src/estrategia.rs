@@ -44,11 +44,11 @@ mod tests {
     };
     #[test]
     fn atacar_al_primero() {
-        let mut combatiente_1 = Combatiente::nuevo();
+        let mut combatiente_1 = Combatiente::default();
         combatiente_1.recibir_daño(10);
-        let mut combatiente_2 = Combatiente::nuevo();
+        let mut combatiente_2 = Combatiente::default();
         combatiente_2.recibir_daño(2);
-        let mut combatiente_3 = Combatiente::nuevo();
+        let mut combatiente_3 = Combatiente::default();
         combatiente_3.recibir_daño(1);
 
         let oponentes = vec![&combatiente_2, &combatiente_1, &combatiente_3];
@@ -60,11 +60,11 @@ mod tests {
 
     #[test]
     fn atacar_al_mas_debil() {
-        let mut combatiente_1 = Combatiente::nuevo();
+        let mut combatiente_1 = Combatiente::default();
         combatiente_1.recibir_daño(10);
-        let mut combatiente_2 = Combatiente::nuevo();
+        let mut combatiente_2 = Combatiente::default();
         combatiente_2.recibir_daño(2);
-        let mut combatiente_3 = Combatiente::nuevo();
+        let mut combatiente_3 = Combatiente::default();
         combatiente_3.recibir_daño(5);
 
         let oponentes = vec![&combatiente_2, &combatiente_1, &combatiente_3];
@@ -76,11 +76,11 @@ mod tests {
 
     #[test]
     fn atacar_al_mas_fuerte() {
-        let mut combatiente_1 = Combatiente::nuevo();
+        let mut combatiente_1 = Combatiente::default();
         combatiente_1.recibir_daño(10);
-        let mut combatiente_2 = Combatiente::nuevo();
+        let mut combatiente_2 = Combatiente::default();
         combatiente_2.recibir_daño(2);
-        let mut combatiente_3 = Combatiente::nuevo();
+        let mut combatiente_3 = Combatiente::default();
         combatiente_3.recibir_daño(1);
 
         let oponentes = vec![&combatiente_2, &combatiente_1, &combatiente_3];

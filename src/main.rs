@@ -1,6 +1,6 @@
 use conlen_rust::{
     arena::Arena,
-    combatiente::EstrategiaDeAtaque,
+    combatiente::{Arma, Combatiente, EstrategiaDeAtaque},
     estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
 };
 
@@ -13,8 +13,12 @@ fn construir_deathmatch_arena(
 
     assert_eq!(cantidad_combatientes, estrategias.len());
     for _ in 0..cantidad_combatientes {
-        ids_combatientes.push(arena.agregar_combatiente_con_estrategia(estrategias.pop().unwrap()));
+        ids_combatientes.push(arena.nuevo_combatiente_con_estrategia(estrategias.pop().unwrap()));
     }
+
+    // Un combatiente con una daga
+    let combatiente_con_daga = Combatiente::nuevo(Arma::daga(), Box::new(AtacarAlPrimero));
+    ids_combatientes.push(arena.agregar_combatiente(combatiente_con_daga));
 
     for id_1 in ids_combatientes.iter() {
         for id_2 in ids_combatientes.iter() {
@@ -28,13 +32,13 @@ fn construir_deathmatch_arena(
 
 fn main() {
     let estrategias: Vec<Box<dyn EstrategiaDeAtaque>> = vec![
-        Box::new(LeñaDeArbolCaido),
-        Box::new(LeñaDeArbolCaido),
         Box::new(VosNoTeLaVasALlevarDeArriba),
         Box::new(VosNoTeLaVasALlevarDeArriba),
         Box::new(AtacarAlPrimero),
         Box::new(AtacarAlPrimero),
+        Box::new(LeñaDeArbolCaido),
+        Box::new(LeñaDeArbolCaido),
     ];
     let mut arena = construir_deathmatch_arena(estrategias.len(), estrategias);
-    arena.lanzar_arena();
+    arena.comenzar_batalla();
 }

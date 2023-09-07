@@ -15,7 +15,13 @@ impl Arena {
         }
     }
 
-    pub fn agregar_combatiente_con_estrategia(
+    pub fn agregar_combatiente(&mut self, combatiente: Combatiente) -> IdCombatiente {
+        let id_combatiente = combatiente.id();
+        self.combatientes.push(combatiente);
+        id_combatiente
+    }
+
+    pub fn nuevo_combatiente_con_estrategia(
         &mut self,
         estrategia: Box<dyn EstrategiaDeAtaque>,
     ) -> IdCombatiente {
@@ -59,11 +65,11 @@ impl Arena {
         }
     }
 
-    pub fn lanzar_arena(&mut self) {
-        let mut termino = false;
+    pub fn comenzar_batalla(&mut self) {
         let mut cycle_index = 0;
         let mut combatientes_fuera_de_combate = HashSet::new();
-        while !termino {
+
+        loop {
             let combatiente = &self.combatientes[cycle_index];
 
             if combatiente.esta_vivo() {
@@ -92,7 +98,14 @@ impl Arena {
 
             // Terminar si todos los combatientes estan fuera de combate
             if combatientes_fuera_de_combate.len() == self.combatientes.len() {
-                termino = true;
+                break;
+            }
+        }
+
+        println!("Termino la batalla!");
+        for combatiente in self.combatientes.iter() {
+            if combatiente.esta_vivo() {
+                println!("El ganador es: {:#?}", combatiente);
             }
         }
     }
@@ -105,8 +118,8 @@ mod tests {
     #[test]
     fn agregar_enemigos() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
-        let id_combatiente_2 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_1 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_2 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         assert_eq!(arena.enemigos_de(id_combatiente_1), Vec::new());
 
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
@@ -117,7 +130,7 @@ mod tests {
     #[test]
     fn no_agrega_combatiente_como_propio_enemigo() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_1 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_1);
         assert!(arena.enemigos_de(id_combatiente_1).is_empty());
     }
@@ -125,8 +138,8 @@ mod tests {
     #[test]
     fn agregar_enemigo_es_idempotente() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
-        let id_combatiente_2 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_1 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_2 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
 

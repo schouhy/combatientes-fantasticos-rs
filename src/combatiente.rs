@@ -37,9 +37,24 @@ pub struct Combatiente {
     estrategia: Box<dyn EstrategiaDeAtaque>,
 }
 
+impl Default for Combatiente {
+    fn default() -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            vida: 20,
+            arma: Arma::puños(),
+            estrategia: Box::new(AtacarAlPrimero),
+        }
+    }
+}
+
 impl Combatiente {
-    pub fn nuevo() -> Self {
-        Self::nuevo_con_estrategia(Box::new(AtacarAlPrimero))
+    pub fn nuevo(arma: Arma, estrategia: Box<dyn EstrategiaDeAtaque>) -> Self {
+        Self {
+            arma,
+            estrategia,
+            ..Self::default()
+        }
     }
 
     pub fn nuevo_con_estrategia(estrategia: Box<dyn EstrategiaDeAtaque>) -> Self {
@@ -49,6 +64,10 @@ impl Combatiente {
             arma: Arma::puños(),
             estrategia,
         }
+    }
+
+    pub fn cambiar_arma(&mut self, arma: Arma) {
+        self.arma = arma;
     }
 
     pub fn recibir_daño(&mut self, puntos: u32) {
@@ -91,24 +110,8 @@ mod tests {
 
     #[test]
     fn combatientes_diferentes_son_distintos() {
-        let combatiente_1 = Combatiente::nuevo();
-        let combatiente_2 = Combatiente::nuevo();
+        let combatiente_1 = Combatiente::default();
+        let combatiente_2 = Combatiente::default();
         assert_ne!(combatiente_1, combatiente_2);
     }
-
-    // #[test]
-    // fn atacar_daña_oponente() {
-    //     let combatiente_1 = Combatiente::nuevo();
-    //     let mut combatiente_2 = Combatiente::nuevo();
-    //     let vida_original_combatiente_2 = combatiente_2.vida();
-    //
-    //     let mut oponentes = vec![&mut combatiente_2];
-    //
-    //     combatiente_1.atacar(oponentes.as_mut_slice());
-    //
-    //     assert_eq!(
-    //         combatiente_2.vida(),
-    //         vida_original_combatiente_2 - combatiente_1.ataque() as i32
-    //     )
-    // }
 }
