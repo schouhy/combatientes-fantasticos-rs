@@ -74,18 +74,19 @@ impl Combatiente {
         }
     }
 
-    pub fn cambiar_arma(&mut self, arma: Arma) {
-        self.arma = arma;
-    }
-
     pub fn recibir_daño(&mut self, puntos: u32) {
         let daño_a_recibir = puntos as i32 - self.proteccion() as i32;
         if daño_a_recibir > 0 {
-            self.vida -= puntos as i32;
+            self.vida -= daño_a_recibir as i32;
             if self.vida <= 0 {
                 println!("Combatiente {} ha muerto!", self.id)
             }
         }
+    }
+
+    pub fn recibir_curacion(&mut self, puntos: u32) {
+        let nueva_vida = self.vida + puntos as i32;
+        self.vida = if nueva_vida > 20 { 20 } else { nueva_vida }
     }
 
     pub fn id(&self) -> IdCombatiente {
@@ -133,18 +134,41 @@ mod tests {
     #[test]
     fn combatiente_nuevo_tiene_20_puntos_de_vida() {
         let combatiente_1 = Combatiente::default();
-        assert_eq!(combatiente_1.vida(), 20)
+        assert_eq!(combatiente_1.vida, 20)
     }
 
     #[test]
     fn combatiente_nuevo_esta_armado_con_puños() {
         let combatiente_1 = Combatiente::default();
-        assert_eq!(combatiente_1.ataque(), 2)
+        assert_eq!(combatiente_1.arma.ataque, 2)
     }
 
     #[test]
     fn combatiente_nuevo_tiene_armadura_de_cuero() {
         let combatiente_1 = Combatiente::default();
-        assert_eq!(combatiente_1.proteccion(), 3)
+        assert_eq!(combatiente_1.armadura.proteccion, 3)
+    }
+
+    #[test]
+    fn recibir_daño_baja_la_vida() {
+        let mut combatiente_1 = Combatiente::default();
+        combatiente_1.recibir_daño(10);
+        assert_eq!(combatiente_1.vida, 20 - 10 + 3)
+    }
+
+    #[test]
+    fn recibir_curacion_sube_la_vida() {
+        let mut combatiente_1 = Combatiente::default();
+        combatiente_1.recibir_daño(10);
+        combatiente_1.recibir_curacion(5);
+        assert_eq!(combatiente_1.vida, 20 - 10 + 3 + 5)
+    }
+
+    #[test]
+    fn recibir_curacion_sube_la_vida_con_maximo_de_20() {
+        let mut combatiente_1 = Combatiente::default();
+        combatiente_1.recibir_daño(10);
+        combatiente_1.recibir_curacion(9);
+        assert_eq!(combatiente_1.vida, 20)
     }
 }

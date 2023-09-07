@@ -42,6 +42,7 @@ mod tests {
         combatiente::{Combatiente, EstrategiaDeAtaque},
         estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
     };
+
     #[test]
     fn atacar_al_primero() {
         let mut combatiente_1 = Combatiente::default();
