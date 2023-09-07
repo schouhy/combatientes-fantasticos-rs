@@ -29,7 +29,6 @@ pub trait EstrategiaDeAtaque: Debug {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
 }
 
-
 #[derive(Debug)]
 pub struct Combatiente {
     id: Uuid,
@@ -42,13 +41,13 @@ impl Combatiente {
     pub fn nuevo() -> Self {
         Self::nuevo_con_estrategia(Box::new(AtacarAlPrimero))
     }
-    
+
     pub fn nuevo_con_estrategia(estrategia: Box<dyn EstrategiaDeAtaque>) -> Self {
         Self {
             id: Uuid::new_v4(),
             vida: 20,
             arma: Arma::puños(),
-            estrategia: estrategia,
+            estrategia,
         }
     }
 

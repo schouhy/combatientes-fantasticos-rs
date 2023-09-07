@@ -36,5 +36,5 @@ fn main() {
         Box::new(AtacarAlPrimero),
     ];
     let mut arena = construir_deathmatch_arena(estrategias.len(), estrategias);
-    arena.empezar();
+    arena.lanzar_arena();
 }

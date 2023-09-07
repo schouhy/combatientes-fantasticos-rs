@@ -1,9 +1,6 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
-use crate::{
-    combatiente::{Combatiente, EstrategiaDeAtaque, IdCombatiente},
-    estrategia::AtacarAlPrimero,
-};
+use crate::combatiente::{Combatiente, EstrategiaDeAtaque, IdCombatiente};
 
 pub struct Arena {
     combatientes: Vec<Combatiente>,
@@ -16,14 +13,6 @@ impl Arena {
             combatientes: Vec::new(),
             enemistades: HashMap::new(),
         }
-    }
-
-    fn ids_combatientes(&self) -> Vec<IdCombatiente> {
-        self.combatientes.iter().map(|x| x.id()).collect()
-    }
-
-    pub fn agregar_combatiente(&mut self) -> IdCombatiente {
-        self.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero))
     }
 
     pub fn agregar_combatiente_con_estrategia(
@@ -70,38 +59,39 @@ impl Arena {
         }
     }
 
-    pub fn empezar(&mut self) {
+    pub fn lanzar_arena(&mut self) {
         let mut termino = false;
         let mut cycle_index = 0;
-        let ids_combatientes = self.ids_combatientes();
-
+        let mut combatientes_fuera_de_combate = HashSet::new();
         while !termino {
-            if self.combatientes[cycle_index].esta_vivo() {
-                let id_combatiente = ids_combatientes[cycle_index];
-                let ids_enemigos = self.enemigos_de(id_combatiente);
-                let enemigos: Vec<_> = self
+            let combatiente = &self.combatientes[cycle_index];
+
+            if combatiente.esta_vivo() {
+                let ids_enemigos = self.enemigos_de(combatiente.id());
+                let enemigos_vivos: Vec<_> = self
                     .combatientes
                     .iter()
                     .filter(|x| ids_enemigos.contains(&x.id()) && x.esta_vivo())
                     .collect();
 
-                if let Some(id_enemigo_a_atacar) =
-                    self.combatientes[cycle_index].elegir_enemigo(&enemigos)
-                {
-                    let daño_a_causar = self.combatientes[cycle_index].ataque();
-
+                if let Some(id_enemigo_a_atacar) = combatiente.elegir_enemigo(&enemigos_vivos) {
+                    let daño_a_causar = combatiente.ataque();
                     for enemigo in self.combatientes.iter_mut() {
                         if enemigo.id() == id_enemigo_a_atacar {
                             enemigo.recibir_daño(daño_a_causar);
                         }
                     }
+                } else {
+                    combatientes_fuera_de_combate.insert(combatiente.id());
                 }
+            } else {
+                combatientes_fuera_de_combate.insert(combatiente.id());
             }
 
             cycle_index = (cycle_index + 1) % self.combatientes.len();
-            let cantidad_combatientes_vivos: u32 =
-                self.combatientes.iter().map(|x| x.esta_vivo() as u32).sum();
-            if cantidad_combatientes_vivos < 2 {
+
+            // Terminar si todos los combatientes estan fuera de combate
+            if combatientes_fuera_de_combate.len() == self.combatientes.len() {
                 termino = true;
             }
         }
@@ -110,13 +100,13 @@ impl Arena {
 
 #[cfg(test)]
 mod tests {
-    use crate::arena::Arena;
+    use crate::{arena::Arena, estrategia::AtacarAlPrimero};
 
     #[test]
     fn agregar_enemigos() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente();
-        let id_combatiente_2 = arena.agregar_combatiente();
+        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_2 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         assert_eq!(arena.enemigos_de(id_combatiente_1), Vec::new());
 
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
@@ -127,7 +117,7 @@ mod tests {
     #[test]
     fn no_agrega_combatiente_como_propio_enemigo() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente();
+        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_1);
         assert!(arena.enemigos_de(id_combatiente_1).is_empty());
     }
@@ -135,8 +125,8 @@ mod tests {
     #[test]
     fn agregar_enemigo_es_idempotente() {
         let mut arena = Arena::nueva();
-        let id_combatiente_1 = arena.agregar_combatiente();
-        let id_combatiente_2 = arena.agregar_combatiente();
+        let id_combatiente_1 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
+        let id_combatiente_2 = arena.agregar_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
         arena.agregar_enemigo_de_combatiente(id_combatiente_1, id_combatiente_2);
 
