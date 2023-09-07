@@ -23,6 +23,21 @@ impl Arma {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub struct Armadura {
+    proteccion: u32,
+}
+
+impl Armadura {
+    pub fn de_cuero() -> Self {
+        Self { proteccion: 3 }
+    }
+
+    pub fn proteccion(&self) -> u32 {
+        self.proteccion
+    }
+}
+
 pub type IdCombatiente = Uuid;
 
 pub trait EstrategiaDeAtaque: Debug {
@@ -34,6 +49,7 @@ pub struct Combatiente {
     id: Uuid,
     vida: i32,
     arma: Arma,
+    armadura: Armadura,
     estrategia: Box<dyn EstrategiaDeAtaque>,
 }
 
@@ -43,6 +59,7 @@ impl Default for Combatiente {
             id: Uuid::new_v4(),
             vida: 20,
             arma: Arma::puños(),
+            armadura: Armadura::de_cuero(),
             estrategia: Box::new(AtacarAlPrimero),
         }
     }
@@ -57,23 +74,17 @@ impl Combatiente {
         }
     }
 
-    pub fn nuevo_con_estrategia(estrategia: Box<dyn EstrategiaDeAtaque>) -> Self {
-        Self {
-            id: Uuid::new_v4(),
-            vida: 20,
-            arma: Arma::puños(),
-            estrategia,
-        }
-    }
-
     pub fn cambiar_arma(&mut self, arma: Arma) {
         self.arma = arma;
     }
 
     pub fn recibir_daño(&mut self, puntos: u32) {
-        self.vida -= puntos as i32;
-        if self.vida <= 0 {
-            println!("Combatiente {} ha muerto!", self.id)
+        let daño_a_recibir = puntos as i32 - self.proteccion() as i32;
+        if daño_a_recibir > 0 {
+            self.vida -= puntos as i32;
+            if self.vida <= 0 {
+                println!("Combatiente {} ha muerto!", self.id)
+            }
         }
     }
 
@@ -91,6 +102,10 @@ impl Combatiente {
 
     pub fn ataque(&self) -> u32 {
         self.arma.ataque()
+    }
+
+    pub fn proteccion(&self) -> u32 {
+        self.armadura.proteccion()
     }
 
     pub fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
@@ -113,5 +128,17 @@ mod tests {
         let combatiente_1 = Combatiente::default();
         let combatiente_2 = Combatiente::default();
         assert_ne!(combatiente_1, combatiente_2);
+    }
+
+    #[test]
+    fn combatiente_nuevo_tiene_20_puntos_de_vida() {
+        let combatiente_1 = Combatiente::default();
+        assert_eq!(combatiente_1.vida(), 20)
+    }
+
+    #[test]
+    fn combatiente_nuevo_tiene_armadura_de_cuero() {
+        let combatiente_1 = Combatiente::default();
+        assert_eq!(combatiente_1.proteccion(), 3)
     }
 }

@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::combatiente::{Combatiente, EstrategiaDeAtaque, IdCombatiente};
+use crate::combatiente::{Arma, Combatiente, EstrategiaDeAtaque, IdCombatiente};
 
 pub struct Arena {
     combatientes: Vec<Combatiente>,
@@ -25,7 +25,7 @@ impl Arena {
         &mut self,
         estrategia: Box<dyn EstrategiaDeAtaque>,
     ) -> IdCombatiente {
-        let nuevo_combatiente = Combatiente::nuevo_con_estrategia(estrategia);
+        let nuevo_combatiente = Combatiente::nuevo(Arma::puños(), estrategia);
         let id_nuevo_combatiente = nuevo_combatiente.id();
         self.combatientes.push(nuevo_combatiente);
         id_nuevo_combatiente
@@ -67,19 +67,23 @@ impl Arena {
 
     pub fn comenzar_batalla(&mut self) {
         let mut cycle_index = 0;
+        // Un combatiente esta fuera de combate si esta muerto o ya no tiene enemigos
         let mut combatientes_fuera_de_combate = HashSet::new();
 
         loop {
+            // Seleccionar un combatiente
             let combatiente = &self.combatientes[cycle_index];
 
             if combatiente.esta_vivo() {
                 let ids_enemigos = self.enemigos_de(combatiente.id());
+                // Coleccionar todos los enemigos vivos del combatiente
                 let enemigos_vivos: Vec<_> = self
                     .combatientes
                     .iter()
                     .filter(|x| ids_enemigos.contains(&x.id()) && x.esta_vivo())
                     .collect();
 
+                // Dar a elelgir al combatiente uno de sus enemigos y proporcionarle el golpe
                 if let Some(id_enemigo_a_atacar) = combatiente.elegir_enemigo(&enemigos_vivos) {
                     let daño_a_causar = combatiente.ataque();
                     for enemigo in self.combatientes.iter_mut() {
@@ -116,7 +120,7 @@ mod tests {
     use crate::{arena::Arena, estrategia::AtacarAlPrimero};
 
     #[test]
-    fn agregar_enemigos() {
+    fn agregar_enemigos_los_agrega_efectivamente() {
         let mut arena = Arena::nueva();
         let id_combatiente_1 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
         let id_combatiente_2 = arena.nuevo_combatiente_con_estrategia(Box::new(AtacarAlPrimero));
