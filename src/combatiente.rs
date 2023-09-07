@@ -137,6 +137,12 @@ mod tests {
     }
 
     #[test]
+    fn combatiente_nuevo_esta_armado_con_puños() {
+        let combatiente_1 = Combatiente::default();
+        assert_eq!(combatiente_1.ataque(), 2)
+    }
+
+    #[test]
     fn combatiente_nuevo_tiene_armadura_de_cuero() {
         let combatiente_1 = Combatiente::default();
         assert_eq!(combatiente_1.proteccion(), 3)
