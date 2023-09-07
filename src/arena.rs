@@ -7,13 +7,13 @@ struct Arena {
 }
 
 impl Arena {
-    fn nueva() -> Self {
+    pub fn nueva() -> Self {
         Self {
             enemistades: HashMap::new(),
         }
     }
 
-    fn agregar_enemigo_de_combatiente(&mut self, combatiente: &Combatiente, enemigo: &Combatiente) {
+    pub fn agregar_enemigo_de_combatiente(&mut self, combatiente: &Combatiente, enemigo: &Combatiente) {
         if combatiente != enemigo {
             self.enemistades
                 .entry(combatiente.id())
@@ -22,7 +22,7 @@ impl Arena {
         }
     }
 
-    fn enemigos_de(&self, combatiente: &Combatiente) -> Vec<IdCombatiente> {
+    pub fn enemigos_de(&self, combatiente: &Combatiente) -> Vec<IdCombatiente> {
         match self.enemistades.get(&combatiente.id()) {
             Some(enemigos) => enemigos.clone(),
             None => Vec::new(),

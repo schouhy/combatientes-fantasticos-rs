@@ -1,18 +1,20 @@
-use std::{collections::HashMap, fmt::Debug};
+use std::fmt::Debug;
 
 use uuid::Uuid;
 
+use crate::estrategia::AtacarAlPrimero;
+
 #[derive(Debug, PartialEq, Eq)]
-struct Arma {
+pub struct Arma {
     ataque: u32,
 }
 
 impl Arma {
-    fn puños() -> Self {
+    pub fn puños() -> Self {
         Self { ataque: 2 }
     }
 
-    fn daga() -> Self {
+    pub fn daga() -> Self {
         Self { ataque: 4 }
     }
 
@@ -23,17 +25,10 @@ impl Arma {
 
 pub type IdCombatiente = Uuid;
 
-trait EstrategiaDeAtaque: Debug {
+pub trait EstrategiaDeAtaque: Debug {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
 }
 
-#[derive(Debug)]
-struct AtacarAlPrimero;
-impl EstrategiaDeAtaque for AtacarAlPrimero {
-    fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
-        enemigos.first().map(|enemigo| enemigo.id())
-    }
-}
 
 #[derive(Debug)]
 pub struct Combatiente {
@@ -53,7 +48,7 @@ impl Combatiente {
         }
     }
 
-    fn recibir_daño(&mut self, puntos: u32) {
+    pub fn recibir_daño(&mut self, puntos: u32) {
         self.vida -= puntos as i32;
     }
 
@@ -92,7 +87,6 @@ impl PartialEq for Combatiente {
         self.id == other.id
     }
 }
-
 
 #[cfg(test)]
 mod tests {
