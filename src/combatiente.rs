@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{collections::HashMap, fmt::Debug};
 
 use uuid::Uuid;
 
@@ -21,7 +21,7 @@ impl Arma {
     }
 }
 
-type IdCombatiente = Uuid;
+pub type IdCombatiente = Uuid;
 
 trait EstrategiaDeAtaque: Debug {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
@@ -36,7 +36,7 @@ impl EstrategiaDeAtaque for AtacarAlPrimero {
 }
 
 #[derive(Debug)]
-struct Combatiente {
+pub struct Combatiente {
     id: Uuid,
     vida: i32,
     arma: Arma,
@@ -44,7 +44,7 @@ struct Combatiente {
 }
 
 impl Combatiente {
-    fn nuevo() -> Self {
+    pub fn nuevo() -> Self {
         Self {
             id: Uuid::new_v4(),
             vida: 20,
@@ -57,19 +57,19 @@ impl Combatiente {
         self.vida -= puntos as i32;
     }
 
-    fn id(&self) -> IdCombatiente {
+    pub fn id(&self) -> IdCombatiente {
         self.id
     }
 
-    fn vida(&self) -> i32 {
+    pub fn vida(&self) -> i32 {
         self.vida
     }
 
-    fn ataque(&self) -> u32 {
+    pub fn ataque(&self) -> u32 {
         self.arma.ataque()
     }
 
-    fn atacar(&self, enemigos: &mut [&mut Combatiente]) {
+    pub fn atacar(&self, enemigos: &mut [&mut Combatiente]) {
         let id_enemigo_a_atacar = self.estrategia.elegir_enemigo(
             &enemigos
                 .iter()
@@ -92,6 +92,7 @@ impl PartialEq for Combatiente {
         self.id == other.id
     }
 }
+
 
 #[cfg(test)]
 mod tests {
