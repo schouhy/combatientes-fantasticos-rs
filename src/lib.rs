@@ -1,3 +1,4 @@
-mod combatiente;
-mod arena;
-mod estrategia;
+pub mod combatiente;
+pub mod arena;
+pub mod estrategia;
+

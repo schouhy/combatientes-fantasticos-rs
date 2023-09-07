@@ -40,7 +40,7 @@ impl EstrategiaDeAtaque for VosNoTeLaVasALlevarDeArriba {
 mod tests {
     use crate::{
         combatiente::{Combatiente, EstrategiaDeAtaque},
-        estrategia::{LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba, AtacarAlPrimero},
+        estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
     };
     #[test]
     fn atacar_al_primero() {
