@@ -168,7 +168,7 @@ mod tests {
     fn recibir_curacion_sube_la_vida_con_maximo_de_20() {
         let mut combatiente_1 = Combatiente::default();
         combatiente_1.recibir_daño(10);
-        combatiente_1.recibir_curacion(9);
+        combatiente_1.recibir_curacion(11);
         assert_eq!(combatiente_1.vida, 20)
     }
 }

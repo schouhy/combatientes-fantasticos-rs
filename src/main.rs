@@ -5,14 +5,12 @@ use conlen_rust::{
 };
 
 fn construir_deathmatch_arena(
-    cantidad_combatientes: usize,
     mut estrategias: Vec<Box<dyn EstrategiaDeAtaque>>,
 ) -> Arena {
     let mut arena = Arena::nueva();
     let mut ids_combatientes = Vec::new();
 
-    assert_eq!(cantidad_combatientes, estrategias.len());
-    for _ in 0..cantidad_combatientes {
+    for _ in 0..estrategias.len() {
         ids_combatientes.push(arena.nuevo_combatiente_con_estrategia(estrategias.pop().unwrap()));
     }
 
@@ -39,6 +37,6 @@ fn main() {
         Box::new(LeñaDeArbolCaido),
         Box::new(LeñaDeArbolCaido),
     ];
-    let mut arena = construir_deathmatch_arena(estrategias.len(), estrategias);
+    let mut arena = construir_deathmatch_arena(estrategias);
     arena.comenzar_batalla();
 }
