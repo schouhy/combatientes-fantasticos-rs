@@ -1,6 +1,6 @@
 use uuid::Uuid;
 
-use crate::estrategia::{AtacarAlPrimero, EstrategiaDeAtaque};
+use crate::estrategia::{AtacarAlPrimero, EsEstrategiaDeAtaque};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Arma {
@@ -44,7 +44,7 @@ pub struct Combatiente {
     vida: i32,
     arma: Arma,
     armadura: Armadura,
-    estrategia: Box<dyn EstrategiaDeAtaque>,
+    estrategia: Box<dyn EsEstrategiaDeAtaque>,
 }
 
 impl Default for Combatiente {
@@ -60,7 +60,7 @@ impl Default for Combatiente {
 }
 
 impl Combatiente {
-    pub fn nuevo(arma: Arma, estrategia: Box<dyn EstrategiaDeAtaque>) -> Self {
+    pub fn nuevo(arma: Arma, estrategia: Box<dyn EsEstrategiaDeAtaque>) -> Self {
         Self {
             arma,
             estrategia,

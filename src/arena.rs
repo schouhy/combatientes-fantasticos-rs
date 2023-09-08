@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{
     combatiente::{Arma, Combatiente, IdCombatiente},
-    estrategia::EstrategiaDeAtaque,
+    estrategia::EsEstrategiaDeAtaque,
 };
 
 pub struct Arena {
@@ -26,7 +26,7 @@ impl Arena {
 
     pub fn nuevo_combatiente_con_estrategia(
         &mut self,
-        estrategia: Box<dyn EstrategiaDeAtaque>,
+        estrategia: Box<dyn EsEstrategiaDeAtaque>,
     ) -> IdCombatiente {
         let nuevo_combatiente = Combatiente::nuevo(Arma::puños(), estrategia);
         let id_nuevo_combatiente = nuevo_combatiente.id();

@@ -2,7 +2,7 @@ use combatientes_fantasticos::{
     arena::Arena,
     combatiente::{Arma, Combatiente},
     estrategia::{
-        AtacarAlPrimero, EstrategiaDeAtaque, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba,
+        AtacarAlPrimero, EsEstrategiaDeAtaque, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba,
     },
 };
 
@@ -10,7 +10,7 @@ fn construir_deathmatch_arena() -> Arena {
     let mut arena = Arena::nueva();
     let mut ids_combatientes = Vec::new();
 
-    let mut estrategias: Vec<Box<dyn EstrategiaDeAtaque>> = vec![
+    let mut estrategias: Vec<Box<dyn EsEstrategiaDeAtaque>> = vec![
         Box::new(VosNoTeLaVasALlevarDeArriba),
         Box::new(VosNoTeLaVasALlevarDeArriba),
         Box::new(AtacarAlPrimero),

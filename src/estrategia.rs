@@ -3,13 +3,13 @@ use std::{cell::RefCell, collections::HashMap};
 use crate::combatiente::{Combatiente, IdCombatiente};
 use std::fmt::Debug;
 
-pub trait EstrategiaDeAtaque: Debug {
+pub trait EsEstrategiaDeAtaque: Debug {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
 }
 
 #[derive(Debug)]
 pub struct AtacarAlPrimero;
-impl EstrategiaDeAtaque for AtacarAlPrimero {
+impl EsEstrategiaDeAtaque for AtacarAlPrimero {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
         enemigos.first().map(|enemigo| enemigo.id())
     }
@@ -17,7 +17,7 @@ impl EstrategiaDeAtaque for AtacarAlPrimero {
 
 #[derive(Debug)]
 pub struct LeñaDeArbolCaido;
-impl EstrategiaDeAtaque for LeñaDeArbolCaido {
+impl EsEstrategiaDeAtaque for LeñaDeArbolCaido {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
         let mut enemigo_mas_debil = enemigos.first()?;
         for enemigo in enemigos.iter() {
@@ -31,7 +31,7 @@ impl EstrategiaDeAtaque for LeñaDeArbolCaido {
 
 #[derive(Debug)]
 pub struct VosNoTeLaVasALlevarDeArriba;
-impl EstrategiaDeAtaque for VosNoTeLaVasALlevarDeArriba {
+impl EsEstrategiaDeAtaque for VosNoTeLaVasALlevarDeArriba {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
         let mut enemigo_mas_fuerte = enemigos.first()?;
         for enemigo in enemigos.iter() {
@@ -58,7 +58,7 @@ impl HayParaTodos {
     }
 }
 
-impl EstrategiaDeAtaque for HayParaTodos {
+impl EsEstrategiaDeAtaque for HayParaTodos {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
         let min_cantidad_de_ataques: usize = enemigos
             .iter()
@@ -99,7 +99,7 @@ impl EstasEnMiLista {
     }
 }
 
-impl EstrategiaDeAtaque for EstasEnMiLista {
+impl EsEstrategiaDeAtaque for EstasEnMiLista {
     fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
         let indice = *self.indice.borrow();
         let ids_de_enemigos: Vec<_> = enemigos.iter().map(|x| x.id()).collect();
@@ -120,7 +120,7 @@ mod tests {
     use crate::{
         combatiente::Combatiente,
         estrategia::{
-            AtacarAlPrimero, EstasEnMiLista, EstrategiaDeAtaque, HayParaTodos, LeñaDeArbolCaido,
+            AtacarAlPrimero, EstasEnMiLista, EsEstrategiaDeAtaque, HayParaTodos, LeñaDeArbolCaido,
             VosNoTeLaVasALlevarDeArriba,
         },
     };
