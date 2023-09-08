@@ -38,7 +38,6 @@ impl Armadura {
     }
 }
 
-
 pub type IdCombatiente = Uuid;
 
 pub trait EstrategiaDeAtaque: Debug {
@@ -78,7 +77,7 @@ impl Combatiente {
     pub fn recibir_daño(&mut self, puntos: u32) {
         let daño_a_recibir = puntos as i32 - self.proteccion() as i32;
         if daño_a_recibir > 0 {
-            self.vida -= daño_a_recibir as i32;
+            self.vida -= daño_a_recibir;
             if self.vida <= 0 {
                 println!("Combatiente {} ha muerto!", self.id)
             }

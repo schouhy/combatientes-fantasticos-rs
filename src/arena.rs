@@ -70,6 +70,8 @@ impl Arena {
         // Un combatiente esta fuera de combate si esta muerto o ya no tiene enemigos
         let mut combatientes_fuera_de_combate = HashSet::new();
 
+        // TODO: evitar de alguna manera un bucle infinito.
+        // Podria pasar por ejemplo si todos tuvieran una estrategia que devuelve `None`
         loop {
             // Seleccionar un combatiente
             let combatiente = &self.combatientes[cycle_index];
@@ -83,12 +85,15 @@ impl Arena {
                     .filter(|x| ids_enemigos.contains(&x.id()) && x.esta_vivo())
                     .collect();
 
-                // Dar a elelgir al combatiente uno de sus enemigos y proporcionarle el golpe
+                // Dar a elegir al combatiente uno de sus enemigos y proporcionarle el golpe
                 if let Some(id_enemigo_a_atacar) = combatiente.elegir_enemigo(&enemigos_vivos) {
-                    let daño_a_causar = combatiente.ataque();
-                    for enemigo in self.combatientes.iter_mut() {
-                        if enemigo.id() == id_enemigo_a_atacar {
-                            enemigo.recibir_daño(daño_a_causar);
+                    // Chequea que `id_enemigo_a_atacar` esta dentro de `enemigos_vivos`
+                    if ids_enemigos.contains(&id_enemigo_a_atacar) {
+                        let daño_a_causar = combatiente.ataque();
+                        for enemigo in self.combatientes.iter_mut() {
+                            if enemigo.id() == id_enemigo_a_atacar {
+                                enemigo.recibir_daño(daño_a_causar);
+                            }
                         }
                     }
                 } else {
