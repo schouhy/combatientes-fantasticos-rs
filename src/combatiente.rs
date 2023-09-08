@@ -1,8 +1,7 @@
-use std::fmt::Debug;
 
 use uuid::Uuid;
 
-use crate::estrategia::AtacarAlPrimero;
+use crate::estrategia::{AtacarAlPrimero, EstrategiaDeAtaque};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Arma {
@@ -40,9 +39,6 @@ impl Armadura {
 
 pub type IdCombatiente = Uuid;
 
-pub trait EstrategiaDeAtaque: Debug {
-    fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
-}
 
 #[derive(Debug)]
 pub struct Combatiente {

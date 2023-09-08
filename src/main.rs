@@ -1,7 +1,7 @@
 use combatientes_fantasticos::{
     arena::Arena,
-    combatiente::{Arma, Combatiente, EstrategiaDeAtaque},
-    estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
+    combatiente::{Arma, Combatiente},
+    estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba, EstrategiaDeAtaque},
 };
 
 fn construir_deathmatch_arena() -> Arena {

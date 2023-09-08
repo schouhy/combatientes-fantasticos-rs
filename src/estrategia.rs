@@ -1,6 +1,11 @@
 use std::{cell::RefCell, collections::HashMap};
 
-use crate::combatiente::{Combatiente, EstrategiaDeAtaque, IdCombatiente};
+use crate::combatiente::{Combatiente, IdCombatiente};
+use std::fmt::Debug;
+
+pub trait EstrategiaDeAtaque: Debug {
+    fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente>;
+}
 
 #[derive(Debug)]
 pub struct AtacarAlPrimero;
@@ -113,9 +118,9 @@ impl EstrategiaDeAtaque for EstasEnMiLista {
 #[cfg(test)]
 mod tests {
     use crate::{
-        combatiente::{Combatiente, EstrategiaDeAtaque},
+        combatiente::Combatiente,
         estrategia::{
-            AtacarAlPrimero, EstasEnMiLista, HayParaTodos, LeñaDeArbolCaido,
+            AtacarAlPrimero, EstasEnMiLista, EstrategiaDeAtaque, HayParaTodos, LeñaDeArbolCaido,
             VosNoTeLaVasALlevarDeArriba,
         },
     };

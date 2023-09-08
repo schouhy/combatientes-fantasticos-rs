@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::combatiente::{Arma, Combatiente, EstrategiaDeAtaque, IdCombatiente};
+use crate::{combatiente::{Arma, Combatiente, IdCombatiente}, estrategia::EstrategiaDeAtaque};
 
 pub struct Arena {
     combatientes: Vec<Combatiente>,
