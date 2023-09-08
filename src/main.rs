@@ -4,11 +4,18 @@ use conlen_rust::{
     estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
 };
 
-fn construir_deathmatch_arena(
-    mut estrategias: Vec<Box<dyn EstrategiaDeAtaque>>,
-) -> Arena {
+fn construir_deathmatch_arena() -> Arena {
     let mut arena = Arena::nueva();
     let mut ids_combatientes = Vec::new();
+
+    let mut estrategias: Vec<Box<dyn EstrategiaDeAtaque>> = vec![
+        Box::new(VosNoTeLaVasALlevarDeArriba),
+        Box::new(VosNoTeLaVasALlevarDeArriba),
+        Box::new(AtacarAlPrimero),
+        Box::new(AtacarAlPrimero),
+        Box::new(LeñaDeArbolCaido),
+        Box::new(LeñaDeArbolCaido),
+    ];
 
     for _ in 0..estrategias.len() {
         ids_combatientes.push(arena.nuevo_combatiente_con_estrategia(estrategias.pop().unwrap()));
@@ -29,14 +36,6 @@ fn construir_deathmatch_arena(
 }
 
 fn main() {
-    let estrategias: Vec<Box<dyn EstrategiaDeAtaque>> = vec![
-        Box::new(VosNoTeLaVasALlevarDeArriba),
-        Box::new(VosNoTeLaVasALlevarDeArriba),
-        Box::new(AtacarAlPrimero),
-        Box::new(AtacarAlPrimero),
-        Box::new(LeñaDeArbolCaido),
-        Box::new(LeñaDeArbolCaido),
-    ];
-    let mut arena = construir_deathmatch_arena(estrategias);
+    let mut arena = construir_deathmatch_arena();
     arena.comenzar_batalla();
 }
