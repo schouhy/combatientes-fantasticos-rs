@@ -1,4 +1,3 @@
-
 use uuid::Uuid;
 
 use crate::estrategia::{AtacarAlPrimero, EstrategiaDeAtaque};
@@ -38,7 +37,6 @@ impl Armadura {
 }
 
 pub type IdCombatiente = Uuid;
-
 
 #[derive(Debug)]
 pub struct Combatiente {
