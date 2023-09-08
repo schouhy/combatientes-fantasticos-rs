@@ -1,4 +1,4 @@
-use conlen_rust::{
+use combatientes_fantasticos::{
     arena::Arena,
     combatiente::{Arma, Combatiente, EstrategiaDeAtaque},
     estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
