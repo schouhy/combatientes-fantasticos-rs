@@ -88,8 +88,9 @@ impl Arena {
                     .filter(|x| ids_enemigos.contains(&x.id()) && x.esta_vivo())
                     .collect();
 
-                // Dar a elegir al combatiente uno de sus enemigos y proporcionarle el golpe
-                if let Some(id_enemigo_a_atacar) = combatiente.elegir_enemigo(&enemigos_vivos) {
+                if enemigos_vivos.is_empty() {
+                    combatientes_fuera_de_combate.insert(combatiente.id());
+                } else if let Some(id_enemigo_a_atacar) = combatiente.elegir_enemigo(&enemigos_vivos) {
                     // Chequea que `id_enemigo_a_atacar` esta dentro de `enemigos_vivos`
                     if ids_enemigos.contains(&id_enemigo_a_atacar) {
                         let daño_a_causar = combatiente.ataque();
@@ -99,8 +100,6 @@ impl Arena {
                             }
                         }
                     }
-                } else {
-                    combatientes_fuera_de_combate.insert(combatiente.id());
                 }
             } else {
                 combatientes_fuera_de_combate.insert(combatiente.id());
