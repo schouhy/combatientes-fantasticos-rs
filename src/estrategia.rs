@@ -1,3 +1,5 @@
+use std::{cell::RefCell, collections::HashMap};
+
 use crate::combatiente::{Combatiente, EstrategiaDeAtaque, IdCombatiente};
 
 #[derive(Debug)]
@@ -36,11 +38,53 @@ impl EstrategiaDeAtaque for VosNoTeLaVasALlevarDeArriba {
     }
 }
 
+#[derive(Debug)]
+pub struct HayParaTodos {
+    // Uso RefCell porque el trait EstrategiaDeAtaque pide implementar el metodo
+    // con un borrow inmutable
+    atacados: RefCell<HashMap<IdCombatiente, usize>>,
+}
+
+impl HayParaTodos {
+    fn nuevo() -> Self {
+        Self {
+            atacados: RefCell::from(HashMap::new()),
+        }
+    }
+}
+impl EstrategiaDeAtaque for HayParaTodos {
+    fn elegir_enemigo(&self, enemigos: &[&Combatiente]) -> Option<IdCombatiente> {
+        let min_cantidad_de_ataques: usize = enemigos
+            .iter()
+            .map(|x| *self.atacados.borrow().get(&x.id()).unwrap_or(&0_usize))
+            .min()
+            .unwrap_or(0);
+
+        let enemigos_menos_atacados: Vec<&Combatiente> = enemigos
+            .into_iter()
+            .filter(|x| {
+                *self.atacados.borrow().get(&x.id()).unwrap_or(&0_usize) == min_cantidad_de_ataques
+            })
+            .cloned()
+            .collect();
+
+        let id_enemigo_elegido = LeñaDeArbolCaido.elegir_enemigo(&enemigos_menos_atacados);
+        if let Some(id_enemigo_elegido) = id_enemigo_elegido {
+            self.atacados
+                .borrow_mut()
+                .insert(id_enemigo_elegido, min_cantidad_de_ataques + 1);
+        }
+        id_enemigo_elegido
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
         combatiente::{Combatiente, EstrategiaDeAtaque},
-        estrategia::{AtacarAlPrimero, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba},
+        estrategia::{
+            AtacarAlPrimero, HayParaTodos, LeñaDeArbolCaido, VosNoTeLaVasALlevarDeArriba,
+        },
     };
 
     #[test]
@@ -89,5 +133,44 @@ mod tests {
         let id_oponente_elegido = VosNoTeLaVasALlevarDeArriba.elegir_enemigo(&oponentes);
 
         assert_eq!(id_oponente_elegido.unwrap(), combatiente_3.id());
+    }
+
+    #[test]
+    fn hay_para_todos() {
+        let mut combatiente_1 = Combatiente::default();
+        combatiente_1.recibir_daño(5);
+        let mut combatiente_2 = Combatiente::default();
+        combatiente_2.recibir_daño(13);
+        let mut combatiente_3 = Combatiente::default();
+        combatiente_3.recibir_daño(4);
+        let mut combatiente_4 = Combatiente::default();
+        combatiente_4.recibir_daño(13);
+
+        let oponentes = vec![
+            &combatiente_1,
+            &combatiente_2,
+            &combatiente_3,
+            &combatiente_4,
+        ];
+
+        let estrategia = HayParaTodos::nuevo();
+
+        let id_oponente_elegido_1 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_2 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_3 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_4 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_5 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_6 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_7 = estrategia.elegir_enemigo(&oponentes);
+        let id_oponente_elegido_8 = estrategia.elegir_enemigo(&oponentes);
+
+        assert_eq!(id_oponente_elegido_1.unwrap(), combatiente_2.id());
+        assert_eq!(id_oponente_elegido_2.unwrap(), combatiente_4.id());
+        assert_eq!(id_oponente_elegido_3.unwrap(), combatiente_1.id());
+        assert_eq!(id_oponente_elegido_4.unwrap(), combatiente_3.id());
+        assert_eq!(id_oponente_elegido_5.unwrap(), combatiente_2.id());
+        assert_eq!(id_oponente_elegido_6.unwrap(), combatiente_4.id());
+        assert_eq!(id_oponente_elegido_7.unwrap(), combatiente_1.id());
+        assert_eq!(id_oponente_elegido_8.unwrap(), combatiente_3.id());
     }
 }

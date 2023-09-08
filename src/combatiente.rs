@@ -38,6 +38,7 @@ impl Armadura {
     }
 }
 
+
 pub type IdCombatiente = Uuid;
 
 pub trait EstrategiaDeAtaque: Debug {
